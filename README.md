@@ -13,7 +13,8 @@ An interactive web-based tool for visualizing common sorting algorithms in actio
   - Selection Sort
   - Insertion Sort
 - Adjustable animation speed- Generate new random arrays
-- Real-time status updates during sorting- Responsive design
+- Real-time status updates during sorting
+- Responsive design
 
 ## Usage
 
