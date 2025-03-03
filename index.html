@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting Algorithm Visualizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            margin: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .array-container {
+            display: flex;
+            height: 300px;
+            align-items: flex-end;
+            gap: 2px;
+            margin: 20px 0;
+        }
+
+        .array-bar {
+            background-color: #4CAF50;
+            width: 20px;
+            transition: height 0.3s, background-color 0.3s;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        select, input[type="range"] {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .status {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sorting Algorithm Visualizer</h1>
+        <div class="controls">
+            <select id="algorithm">
+                <option value="bubble">Bubble Sort</option>
+                <option value="selection">Selection Sort</option>
+                <option value="insertion">Insertion Sort</option>
+            </select>
+            <button onclick="generateNewArray()">Generate New Array</button>
+            <button onclick="startSorting()" id="sortButton">Start Sorting</button>
+            <label>Speed:</label>
+            <input type="range" id="speed" min="1" max="100" value="50">
+        </div>
+        <div id="array-container" class="array-container"></div>
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        let array = [];
+        let isSorting = false;
+        const SPEED_MULTIPLIER = 50;
+
+        function generateNewArray() {
+            if (isSorting) return;
+            array = Array.from({length: 20}, () => Math.floor(Math.random() * 90) + 10);
+            renderArray();
+        }
+
+        function renderArray() {
+            const container = document.getElementById('array-container');
+            container.innerHTML = '';
+            array.forEach(value => {
+                const bar = document.createElement('div');
+                bar.className = 'array-bar';
+                bar.style.height = `${value * 3}px`;
+                container.appendChild(bar);
+            });
+        }
+
+        async function startSorting() {
+            if (isSorting) return;
+            isSorting = true;
+            document.getElementById('sortButton').disabled = true;
+            
+            const algorithm = document.getElementById('algorithm').value;
+            const originalArray = [...array];
+            
+            switch(algorithm) {
+                case 'bubble':
+                    await bubbleSort();
+                    break;
+                case 'selection':
+                    await selectionSort();
+                    break;
+                case 'insertion':
+                    await insertionSort();
+                    break;
+            }
+            
+            isSorting = false;
+            document.getElementById('sortButton').disabled = false;
+            updateStatus('Sorting complete!');
+        }
+
+        async function bubbleSort() {
+            for (let i = 0; i < array.length; i++) {
+                for (let j = 0; j < array.length - i - 1; j++) {
+                    updateStatus(`Comparing elements ${j} and ${j+1}`);
+                    await highlightBars(j, j+1);
+                    
+                    if (array[j] > array[j+1]) {
+                        updateStatus(`Swapping elements ${j} and ${j+1}`);
+                        [array[j], array[j+1]] = [array[j+1], array[j]];
+                        await swapBars(j, j+1);
+                    }
+                }
+            }
+        }
+
+        async function selectionSort() {
+            for (let i = 0; i < array.length; i++) {
+                let minIndex = i;
+                for (let j = i + 1; j < array.length; j++) {
+                    updateStatus(`Looking for minimum element`);
+                    await highlightBars(minIndex, j);
+                    if (array[j] < array[minIndex]) {
+                        minIndex = j;
+                    }
+                }
+                if (minIndex !== i) {
+                    updateStatus(`Swapping elements ${i} and ${minIndex}`);
+                    [array[i], array[minIndex]] = [array[minIndex], array[i]];
+                    await swapBars(i, minIndex);
+                }
+            }
+        }
+
+        async function insertionSort() {
+            for (let i = 1; i < array.length; i++) {
+                let key = array[i];
+                let j = i - 1;
+                while (j >= 0 && array[j] > key) {
+                    updateStatus(`Shifting elements to insert ${key}`);
+                    await highlightBars(j, j+1);
+                    array[j+1] = array[j];
+                    await swapBars(j, j+1);
+                    j--;
+                }
+                array[j+1] = key;
+                renderArray();
+                await delay();
+            }
+        }
+
+        function updateStatus(text) {
+            document.getElementById('status').textContent = text;
+        }
+
+        async function highlightBars(index1, index2) {
+            const bars = document.getElementsByClassName('array-bar');
+            bars[index1].style.backgroundColor = '#ff0000';
+            bars[index2].style.backgroundColor = '#ff0000';
+            await delay();
+            bars[index1].style.backgroundColor = '#4CAF50';
+            bars[index2].style.backgroundColor = '#4CAF50';
+        }
+
+        async function swapBars(index1, index2) {
+            const bars = document.getElementsByClassName('array-bar');
+            const tempHeight = bars[index1].style.height;
+            bars[index1].style.height = bars[index2].style.height;
+            bars[index2].style.height = tempHeight;
+            await delay();
+        }
+
+        function delay() {
+            const speed = document.getElementById('speed').value;
+            return new Promise(resolve => 
+                setTimeout(resolve, SPEED_MULTIPLIER * (100 - speed))
+            );
+        }
+
+        // Initialize
+        generateNewArray();
+    </script>
+</body>
+</html>
