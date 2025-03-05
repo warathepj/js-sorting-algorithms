@@ -19,8 +19,10 @@ An interactive web-based tool for visualizing common sorting algorithms in actio
 ## Usage
 
 1. Open `index.html` in a web browser
-2. Select a sorting algorithm from the dropdown menu3. Use the "Generate New Array" button to create a new random array
-3. Adjust the speed slider to control the visualization speed5. Click "Start Sorting" to begin the visualization
+2. Select a sorting algorithm from the dropdown menu
+3. Use the "Generate New Array" button to create a new random array
+4. Adjust the speed slider to control the visualization speed
+5. Click "Start Sorting" to begin the visualization
 
 ## How It Works
 
