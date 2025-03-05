@@ -50,8 +50,10 @@ An interactive web-based tool for visualizing common sorting algorithms in actio
 
 ## Technologies Used
 
-- HTML5- CSS3
-- JavaScript (ES6+)- No external libraries or frameworks required
+- HTML5
+- CSS3
+- JavaScript (ES6+)
+- No external libraries or frameworks required
 
 ## License
 
