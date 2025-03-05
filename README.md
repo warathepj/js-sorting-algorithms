@@ -27,8 +27,10 @@ An interactive web-based tool for visualizing common sorting algorithms in actio
 ## How It Works
 
 - Each array element is represented by a vertical bar
-- Bar height corresponds to the element's value- Red bars indicate elements being compared
-- Green bars represent the default state- The status message shows current operation details
+- Bar height corresponds to the element's value
+- Red bars indicate elements being compared
+- Green bars represent the default state
+- The status message shows current operation details
 
 ## Sorting Algorithms Implemented
 
